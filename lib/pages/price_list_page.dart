@@ -12,8 +12,8 @@ class PriceListPage extends ConsumerStatefulWidget {
 }
 
 class _PriceListPageState extends ConsumerState<PriceListPage> {
-  bool volume_sort = false;
-  bool market_cap_sort = false;
+  bool volume_sort = true;
+  bool market_cap_sort = true;
   @override
   void initState() {
     // TODO: implement initState
@@ -59,7 +59,7 @@ class _PriceListPageState extends ConsumerState<PriceListPage> {
                 },
                 label: Row(
                   children: [
-                    Icon(volume_sort
+                    Icon(!volume_sort
                         ? Icons.arrow_drop_up
                         : Icons.arrow_drop_down),
                     Text('24 Hour Volume'),
@@ -84,7 +84,7 @@ class _PriceListPageState extends ConsumerState<PriceListPage> {
                 },
                 label: Row(
                   children: [
-                    Icon(market_cap_sort
+                    Icon(!market_cap_sort
                         ? Icons.arrow_drop_up
                         : Icons.arrow_drop_down),
                     Text('Market Cap'),
