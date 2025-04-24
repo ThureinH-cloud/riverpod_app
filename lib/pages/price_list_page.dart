@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_app/data/models/price_model.dart';
 import 'package:riverpod_app/notifiers/price_list/price_list_state_model.dart';
 import 'package:riverpod_app/notifiers/price_list/price_list_state_notifier.dart';
+import 'package:riverpod_app/static/number_format.dart';
+import 'package:riverpod_app/widgets/price_indicator.dart';
 
 class PriceListPage extends ConsumerStatefulWidget {
   const PriceListPage({super.key});
@@ -157,62 +159,113 @@ class _PriceListPageState extends ConsumerState<PriceListPage> {
                         ),
                         Divider(),
                         Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Expanded(
-                              flex: 1,
                               child: Text('1h'),
                             ),
                             Expanded(
-                              flex: 1,
                               child: Text('24h'),
                             ),
                             Expanded(
-                              flex: 1,
                               child: Text('7d'),
                             ),
+                          ],
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Expanded(
+                              child: Row(
+                                children: [
+                                  priceIndicator(priceModel
+                                          .priceChangePercentage1hInCurrency ??
+                                      0),
+                                  Text(
+                                    priceModel.priceChangePercentage1hInCurrency
+                                            ?.toStringAsFixed(1) ??
+                                        '',
+                                    style: TextStyle(
+                                      color: indicatorColor(priceModel
+                                              .priceChangePercentage1hInCurrency ??
+                                          0),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Expanded(
+                              child: Row(
+                                children: [
+                                  priceIndicator(priceModel
+                                          .priceChangePercentage24hInCurrency ??
+                                      0),
+                                  Text(
+                                    priceModel
+                                            .priceChangePercentage24hInCurrency
+                                            ?.toStringAsFixed(1) ??
+                                        '',
+                                    style: TextStyle(
+                                      color: indicatorColor(priceModel
+                                              .priceChangePercentage24hInCurrency ??
+                                          0),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Expanded(
+                              child: Row(
+                                children: [
+                                  priceIndicator(priceModel
+                                          .priceChangePercentage7dInCurrency ??
+                                      0),
+                                  Text(
+                                    priceModel.priceChangePercentage7dInCurrency
+                                            ?.toStringAsFixed(1) ??
+                                        '',
+                                    style: TextStyle(
+                                      color: indicatorColor(priceModel
+                                              .priceChangePercentage7dInCurrency ??
+                                          0),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                        Divider(),
+                        Row(
+                          children: [
                             Expanded(
                               flex: 2,
                               child: Text('24 hr volume'),
                             ),
-                            Expanded(
-                              flex: 2,
-                              child: Text('Market Cap'),
+                            Align(
+                              alignment: Alignment.centerRight,
+                              child: Expanded(
+                                flex: 2,
+                                child: Text('Market Cap'),
+                              ),
                             )
                           ],
                         ),
                         Row(
                           children: [
                             Expanded(
-                              flex: 1,
-                              child: Text(priceModel
-                                      .priceChangePercentage1hInCurrency
-                                      ?.toStringAsFixed(1) ??
-                                  ''),
-                            ),
-                            Expanded(
-                              flex: 1,
-                              child: Text(priceModel
-                                      .priceChangePercentage24hInCurrency
-                                      ?.toStringAsFixed(1) ??
-                                  ''),
-                            ),
-                            Expanded(
-                              flex: 1,
-                              child: Text(priceModel
-                                      .priceChangePercentage7dInCurrency
-                                      ?.toStringAsFixed(1) ??
-                                  ''),
-                            ),
-                            Expanded(
                               flex: 2,
                               child: Text(
-                                priceModel.totalVolume.toString(),
-                              ),
+                                  ' ${NumberUtils.commaDecimal(priceModel.totalVolume ?? 0, 2)}'),
                             ),
-                            Expanded(
-                              flex: 2,
-                              child: Text(
-                                priceModel.marketCap.toString(),
+                            Align(
+                              alignment: Alignment.centerRight,
+                              child: Expanded(
+                                flex: 2,
+                                child: Text(
+                                  NumberUtils.commaDecimal(
+                                      priceModel.marketCap ?? 0, 2),
+                                ),
                               ),
                             )
                           ],

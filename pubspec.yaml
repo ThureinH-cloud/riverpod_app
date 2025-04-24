@@ -37,6 +37,7 @@ dependencies:
   flutter_riverpod: ^2.6.1
   dio: ^5.8.0+1
   pretty_dio_logger: ^1.4.0
+  intl: ^0.20.2
 dev_dependencies:
   flutter_test:
     sdk: flutter
