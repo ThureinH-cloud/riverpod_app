@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:riverpod_app/pages/price_list_page.dart';
+import 'package:riverpod_app/static/go_routes.dart';
 
 void main() {
   runApp(
     ProviderScope(
-      child: const MyApp(),
+      child: MyApp(),
     ),
   );
 }
@@ -14,9 +14,9 @@ class MyApp extends StatelessWidget {
   const MyApp({super.key});
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp.router(
       debugShowCheckedModeBanner: false,
-      home: PriceListPage(),
+      routerConfig: routes,
     );
   }
 }
