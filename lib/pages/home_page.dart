@@ -1,57 +1,34 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:riverpod_app/pages/favorite_page.dart';
-import 'package:riverpod_app/pages/price_list_page.dart';
-import 'package:riverpod_app/pages/settings_page.dart';
-import 'package:riverpod_app/static/go_routes.dart';
 
-import 'news_page.dart';
+class HomePage extends StatelessWidget {
+  final Widget child;
+  const HomePage({super.key, required this.child});
 
-class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  static const mainRoutes = [
+    '/',
+    '/favorites',
+    '/news',
+    '/settings',
+  ];
 
-  @override
-  State<HomePage> createState() => _HomePageState();
-}
-
-class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
-    GoRouterState state = GoRouter.of(context).state;
-    String path = state.uri.path;
-    print(path);
+    final currentPath = GoRouter.of(context).state.uri.path;
+    final selectedIndex = mainRoutes.indexOf(currentPath);
+
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: Text("Cryptocurrency Price List"),
-        actions: [],
+        title: const Text("Cryptocurrency Price List"),
       ),
-      body: Column(
-        children: [
-          if (path == '/')
-            Expanded(
-              child: PriceListPage(),
-            ),
-          if (path == '/favorites')
-            Expanded(
-              child: FavoritePage(),
-            ),
-          if (path == '/news')
-            Expanded(
-              child: NewsPage(),
-            ),
-          if (path == '/settings')
-            Expanded(
-              child: SettingsPage(),
-            ),
-        ],
-      ),
+      body: child,
       bottomNavigationBar: NavigationBar(
-        selectedIndex: _calculateSelectedIndex(path),
+        selectedIndex: selectedIndex < 0 ? 0 : selectedIndex,
         onDestinationSelected: (index) {
           context.go(mainRoutes[index]);
         },
-        destinations: [
+        destinations: const [
           NavigationDestination(icon: Icon(Icons.home), label: 'Home'),
           NavigationDestination(icon: Icon(Icons.star), label: 'Favorite'),
           NavigationDestination(icon: Icon(Icons.newspaper), label: 'News'),
@@ -59,12 +36,5 @@ class _HomePageState extends State<HomePage> {
         ],
       ),
     );
-  }
-
-  int _calculateSelectedIndex(String location) {
-    if (location.startsWith('/favorites')) return 1;
-    if (location.startsWith('/news')) return 2;
-    if (location.startsWith('/settings')) return 3;
-    return 0;
   }
 }
