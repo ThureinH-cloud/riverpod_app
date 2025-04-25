@@ -8,4 +8,10 @@ class UrlConst {
   static const newsUrl = "https://newsapi.org/v2/everything";
   static const queryString =
       "?q=cryptocurrency&page=1&pageSize=20&apiKey=ddebe25ee080469d865b4ada1944ff92";
+  static const favoriteUrl =
+      "markets?vs_currency=usd&ids=bitcoin,ethereum&price_change_percentage=1h,24h,7d";
+
+  static String getCoins(List<String> names) {
+    return "${baseUrl}markets?vs_currency=usd&ids=${names.join(",")}&price_change_percentage=1h,24h,7d";
+  }
 }

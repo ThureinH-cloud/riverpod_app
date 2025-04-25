@@ -1,4 +1,6 @@
+import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:riverpod_app/pages/price_details_page.dart';
 
 import '../pages/favorite_page.dart';
 import '../pages/home_page.dart';
@@ -32,5 +34,16 @@ final GoRouter routers = GoRouter(
       path: '/settings',
       builder: (context, state) => HomePage(child: SettingsPage()),
     ),
+    GoRoute(
+        name: 'detail',
+        path: '/detail',
+        builder: (context, state) {
+          String? symbol = state.uri.queryParameters['symbol'];
+          String? name = state.uri.queryParameters['name'];
+          if (symbol != null && name != null) {
+            return PriceDetailsPage(symbol: symbol, name: name);
+          }
+          return SizedBox.shrink();
+        }),
   ],
 );

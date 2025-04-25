@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_app/static/my_preferences_storage.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../static/url_const.dart';
 import '../widgets/iframe_viewer/iframe_viewer_mobile.dart';
@@ -27,20 +29,34 @@ class _PriceDetailsPageState extends ConsumerState<PriceDetailsPage> {
         '${UrlConst.chartUrl}${widget.symbol.toUpperCase()}USD${UrlConst.chartQuery}';
     print(chartUrl);
     return Scaffold(
-        appBar: AppBar(
-          centerTitle: false,
-          title: Text(widget.name),
+      appBar: AppBar(
+        centerTitle: false,
+        title: Text(widget.name),
+        actions: [
+          IconButton(
+            onPressed: () async {
+              Set<String> list = MyPreferencesStorage.getFavList().toSet();
+              list.add(widget.name);
+              SharedPreferences myPrefs = MyPreferencesStorage.getPreferences();
+              myPrefs.setStringList("favorites", list.toList());
+              print(myPrefs.getStringList("favorites"));
+            },
+            icon: Icon(
+              Icons.favorite_outline,
+            ),
+          )
+        ],
+      ),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            SizedBox(
+              height: height * 0.4,
+              child: IframeViewer(link: chartUrl),
+            ),
+          ],
         ),
-        body: SingleChildScrollView(
-          child: Column(
-            children: [
-              SizedBox(
-                height: height * 0.4,
-                child: IframeViewer(link: chartUrl),
-              ),
-            ],
-          ),
-        ),
+      ),
     );
   }
 }

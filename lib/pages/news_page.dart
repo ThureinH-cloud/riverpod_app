@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_app/data/models/news_model.dart';
 import 'package:riverpod_app/notifiers/news_list/news_list_state_model.dart';
 import 'package:riverpod_app/notifiers/news_list/news_list_state_notifier.dart';
+import 'package:riverpod_app/pages/app_browser_page.dart';
 
 class NewsPage extends ConsumerStatefulWidget {
   const NewsPage({super.key});
@@ -30,54 +31,103 @@ class _NewsPageState extends ConsumerState<NewsPage> {
   Widget build(BuildContext context) {
     NewsListStateModel newsListStateModel = ref.watch(newsListProvider);
     List<NewsModel> news = newsListStateModel.newsList;
+
     return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Expanded(
-          child: ListView.builder(
-            itemCount: news.length,
-            itemBuilder: (context, index) {
-              NewsModel newsModel = news[index];
-              return Column(
-                children: [
-                  Row(
+        if (newsListStateModel.loading)
+          const Center(
+            child: CircularProgressIndicator(),
+          ),
+        if (newsListStateModel.loading == false)
+          Expanded(
+            child: ListView.builder(
+              itemCount: news.length,
+              itemBuilder: (context, index) {
+                NewsModel newsModel = news[index];
+                DateTime parsed =
+                    DateTime.parse(newsModel.publishedAt!).toLocal();
+                String year = parsed.year.toString();
+                String month = parsed.month.toString().padLeft(2, '0');
+                String day = parsed.day.toString().padLeft(2, '0');
+                return InkWell(
+                  onTap: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (_) =>
+                            AppBrowserPage(url: newsModel.url ?? '')));
+                  },
+                  child: Column(
                     children: [
-                      Image.network(
-                        newsModel.urlToImage ?? '',
-                        width: 140,
-                        height: 100,
-                        fit: BoxFit.cover,
-                      ),
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
+                      Row(
                         children: [
-                          Text(
-                            newsModel.title?.substring(0, 20) ?? '',
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
+                          Image.network(
+                            newsModel.urlToImage ?? '',
+                            width: 120,
+                            height: 130,
+                            fit: BoxFit.cover,
                           ),
-                          Text(newsModel.publishedAt ?? ''),
-                          Row(
-                            children: [
-                              Text('Author - '),
-                              Text(newsModel.author?.substring(0, 9) ?? ''),
-                            ],
+                          SizedBox(
+                            width: 12,
                           ),
-                          Text(
-                            newsModel.description?.substring(0, 17) ?? '',
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          Text(newsModel.content?.substring(0, 22) ?? '')
+                          Expanded(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  newsModel.title ?? '',
+                                  maxLines: 4,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 17),
+                                ),
+                                Row(
+                                  children: [
+                                    Text(
+                                      'Author - ',
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 15,
+                                      ),
+                                    ),
+                                    Expanded(
+                                      child: Text(
+                                        newsModel.author ?? '',
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.w500,
+                                          fontSize: 15,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                Text(
+                                  newsModel.description ?? '',
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Text('Published At - '),
+                                    Text('$year-$month-$day'),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          )
                         ],
-                      )
+                      ),
+                      Divider()
                     ],
                   ),
-                  Divider()
-                ],
-              );
-            },
-          ),
-        )
+                );
+              },
+            ),
+          )
       ],
     );
   }

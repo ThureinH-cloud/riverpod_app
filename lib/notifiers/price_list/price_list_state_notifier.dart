@@ -34,4 +34,15 @@ class PriceListStateNotifier extends Notifier<PriceListStateModel> {
       );
     }
   }
+
+  Future<void> getFavoriteList() async {
+    try {
+      state = state.copyWith(loading: true, errorMessage: '');
+      List<PriceModel> favoritePriceList = await _apiServices.getFavoriteList();
+      print(favoritePriceList);
+      state = state.copyWith(loading: false, priceList: favoritePriceList);
+    } catch (e) {
+      state = state.copyWith(loading: false, errorMessage: e.toString());
+    }
+  }
 }

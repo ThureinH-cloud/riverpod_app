@@ -15,10 +15,11 @@ class NewsListStateNotifier extends Notifier<NewsListStateModel> {
 
   void fetchNewsfromApi() async {
     try {
+      state = state.copyWith(loading: true, errorMessage: '');
       List<NewsModel> news = await _newsApiServices.getNews();
-      state = state.copyWith(newsList: news);
+      state = state.copyWith(loading: false, newsList: news);
     } catch (e) {
-      state = state.copyWith(errorMessage: e.toString());
+      state = state.copyWith(loading: false, errorMessage: e.toString());
     }
   }
 }
