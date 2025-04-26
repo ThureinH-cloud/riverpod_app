@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:riverpod_app/static/my_preferences_storage.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:riverpod_app/data/dto/favorite_dto.dart';
 
 import '../static/url_const.dart';
 import '../widgets/iframe_viewer/iframe_viewer_mobile.dart';
@@ -33,18 +32,28 @@ class _PriceDetailsPageState extends ConsumerState<PriceDetailsPage> {
         centerTitle: false,
         title: Text(widget.name),
         actions: [
-          IconButton(
-            onPressed: () async {
-              Set<String> list = MyPreferencesStorage.getFavList().toSet();
-              list.add(widget.name);
-              SharedPreferences myPrefs = MyPreferencesStorage.getPreferences();
-              myPrefs.setStringList("favorites", list.toList());
-              print(myPrefs.getStringList("favorites"));
-            },
-            icon: Icon(
-              Icons.favorite_outline,
-            ),
-          )
+          (!FavoriteDto.getFavList().contains(widget.name))
+              ? IconButton(
+                  onPressed: () async {
+                    Set<String> list = FavoriteDto.getFavList().toSet();
+                    list.add(widget.name);
+
+                    FavoriteDto.setFavoriteList(list.toList());
+                    setState(() {});
+                    print(FavoriteDto.getFavList());
+                  },
+                  icon: Icon(
+                    Icons.favorite_outline,
+                  ),
+                )
+              : IconButton(
+                  onPressed: () {
+                    Set<String> list = FavoriteDto.getFavList().toSet();
+                    list.remove(widget.name);
+                    FavoriteDto.setFavoriteList(list.toList());
+                    setState(() {});
+                  },
+                  icon: Icon(Icons.favorite))
         ],
       ),
       body: SingleChildScrollView(

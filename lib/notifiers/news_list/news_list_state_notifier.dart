@@ -8,9 +8,27 @@ typedef NewsStateProvider
 
 class NewsListStateNotifier extends Notifier<NewsListStateModel> {
   final NewsApiServices _newsApiServices = NewsApiServices();
+  int _page = 0;
+
   @override
   NewsListStateModel build() {
     return NewsListStateModel();
+  }
+
+  void loadMore() async {
+    print("Loaded -----");
+    _page = _page + 1;
+    try {
+      List<NewsModel> newList = await _newsApiServices.getNews(
+        page: _page,
+      );
+      state = state.copyWith(newsList: [
+        ...state.newsList,
+        ...newList,
+      ]);
+    } catch (e) {
+      print(e.toString());
+    }
   }
 
   void fetchNewsfromApi() async {

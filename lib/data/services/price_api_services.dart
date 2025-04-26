@@ -1,10 +1,9 @@
 import 'package:dio/dio.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
+import 'package:riverpod_app/data/dto/favorite_dto.dart';
 import 'package:riverpod_app/data/models/price_model.dart';
 import 'package:riverpod_app/static/url_const.dart';
 import 'package:riverpod_app/static/utils.dart';
-
-import '../../static/my_preferences_storage.dart';
 
 class PriceApiServices {
   final Dio _dio = Dio(BaseOptions(baseUrl: UrlConst.baseUrl))
@@ -28,11 +27,11 @@ class PriceApiServices {
   }
 
   Future<List<PriceModel>> getFavoriteList() async {
-    List<String> favoriteList = MyPreferencesStorage.getFavList();
+    List<String> favoriteList = FavoriteDto.getFavList();
     if (favoriteList.isEmpty) {
       return [];
     }
-    final response = await _dio.get(UrlConst.getCoins(favoriteList));
+    final response = await _dio.get(UrlConst.getFavoriteCoins(favoriteList));
     return (response.data as List).map((e) => PriceModel.fromJson(e)).toList();
   }
 }
