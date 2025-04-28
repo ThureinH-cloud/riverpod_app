@@ -8,7 +8,7 @@ typedef NewsStateProvider
 
 class NewsListStateNotifier extends Notifier<NewsListStateModel> {
   final NewsApiServices _newsApiServices = NewsApiServices();
-  int _page = 0;
+  int _page = 1;
 
   @override
   NewsListStateModel build() {
@@ -19,13 +19,13 @@ class NewsListStateNotifier extends Notifier<NewsListStateModel> {
     print("Loaded -----");
     _page = _page + 1;
     try {
-      List<NewsModel> newList = await _newsApiServices.getNews(
+      NewsModel newList = await _newsApiServices.getNews(
         page: _page,
       );
-      state = state.copyWith(newsList: [
-        ...state.newsList,
-        ...newList,
-      ]);
+      state = state.copyWith(newsModel:state.newsModel?.copyWith(articles:[
+        ...state.newsModel?.articles ?? [],
+        ...newList.articles ?? []
+      ] ,));
     } catch (e) {
       print(e.toString());
     }
@@ -34,8 +34,8 @@ class NewsListStateNotifier extends Notifier<NewsListStateModel> {
   void fetchNewsfromApi() async {
     try {
       state = state.copyWith(loading: true, errorMessage: '');
-      List<NewsModel> news = await _newsApiServices.getNews();
-      state = state.copyWith(loading: false, newsList: news);
+      NewsModel news = await _newsApiServices.getNews();
+      state = state.copyWith(loading: false, newsModel: news);
     } catch (e) {
       state = state.copyWith(loading: false, errorMessage: e.toString());
     }

@@ -4,6 +4,7 @@ import 'package:riverpod_app/data/models/news_model.dart';
 import 'package:riverpod_app/notifiers/news_list/news_list_state_model.dart';
 import 'package:riverpod_app/notifiers/news_list/news_list_state_notifier.dart';
 import 'package:riverpod_app/pages/app_browser_page.dart';
+import 'package:share_plus/share_plus.dart';
 
 class NewsPage extends ConsumerStatefulWidget {
   const NewsPage({super.key});
@@ -30,8 +31,8 @@ class _NewsPageState extends ConsumerState<NewsPage> {
   @override
   Widget build(BuildContext context) {
     NewsListStateModel newsListStateModel = ref.watch(newsListProvider);
-    List<NewsModel> news = newsListStateModel.newsList;
-
+    NewsModel? news = newsListStateModel.newsModel;
+    int count = news?.articles?.length ?? 0;
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -42,18 +43,19 @@ class _NewsPageState extends ConsumerState<NewsPage> {
         if (newsListStateModel.loading == false)
           Expanded(
             child: ListView.builder(
-              itemCount: news.length + 1,
+              itemCount: (count + 1),
               itemBuilder: (context, index) {
-                print('$index -- ${news.length}');
-                if (index == news.length) {
+                print('$index -- $count');
+                if (index == count) {
                   ref.read(newsListProvider.notifier).loadMore();
                   return Center(
                     child: CircularProgressIndicator(),
                   );
                 }
-                NewsModel newsModel = news[index];
+                Articles? articles = news?.articles?[index];
+
                 DateTime parsed =
-                    DateTime.parse(newsModel.publishedAt!).toLocal();
+                    DateTime.parse(articles?.publishedAt ?? '').toLocal();
                 String year = parsed.year.toString();
                 String month = parsed.month.toString().padLeft(2, '0');
                 String day = parsed.day.toString().padLeft(2, '0');
@@ -62,82 +64,118 @@ class _NewsPageState extends ConsumerState<NewsPage> {
                     Navigator.of(context).push(
                       MaterialPageRoute(
                         builder: (_) =>
-                            AppBrowserPage(url: newsModel.url ?? ''),
+                            AppBrowserPage(url: articles?.url ?? ''),
                       ),
                     );
                   },
                   child: Card(
+                    clipBehavior: Clip.antiAliasWithSaveLayer,
                     child: Column(
                       children: [
-                        Padding(
-                          padding: EdgeInsets.only(left: 4),
-                          child: Row(
-                            children: [
-                              if (newsModel.urlToImage != null)
-                                Image.network(
-                                  newsModel.urlToImage ?? '',
-                                  width: 120,
-                                  height: 130,
-                                  fit: BoxFit.cover,
-                                ),
-                              if (newsModel.urlToImage == null)
-                                SizedBox.shrink(),
-                              SizedBox(
-                                width: 12,
-                              ),
-                              Expanded(
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      newsModel.title ?? '',
-                                      maxLines: 4,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 17),
-                                    ),
-                                    Row(
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  if (articles?.urlToImage != null)
+                                    Stack(
                                       children: [
-                                        Text(
-                                          'Author - ',
-                                          style: TextStyle(
-                                            fontWeight: FontWeight.w500,
-                                            fontSize: 15,
-                                          ),
+                                        Image.network(
+                                          articles?.urlToImage ?? '',
+                                          width: double.infinity,
+                                          height: 180,
+                                          fit: BoxFit.cover,
+                                          errorBuilder:
+                                              (context, error, stackTrace) {
+                                            return SizedBox.shrink();
+                                          },
                                         ),
-                                        Expanded(
+                                        Container(
+                                          padding: EdgeInsets.all(12),
+                                          color: Colors.black.withAlpha(80),
+                                          margin: EdgeInsets.all(8),
                                           child: Text(
-                                            newsModel.author ?? '',
-                                            maxLines: 1,
-                                            overflow: TextOverflow.ellipsis,
+                                            articles?.source?.name ?? '',
                                             style: TextStyle(
-                                              fontWeight: FontWeight.w500,
-                                              fontSize: 15,
+                                              color: Colors.white,
                                             ),
                                           ),
+                                        )
+                                      ],
+                                    ),
+                                  Padding(
+                                    padding: const EdgeInsets.all(12.0),
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          articles?.title ?? '',
+                                          maxLines: 4,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 17,
+                                          ),
+                                        ),
+                                        Row(
+                                          children: [
+                                            Text(
+                                              'Author - ',
+                                              style: TextStyle(
+                                                fontWeight: FontWeight.w500,
+                                                fontSize: 15,
+                                              ),
+                                            ),
+                                            Expanded(
+                                              child: Text(
+                                                articles?.author ?? '',
+                                                overflow: TextOverflow.ellipsis,
+                                                maxLines: 1,
+                                                style: TextStyle(
+                                                  fontWeight: FontWeight.w500,
+                                                  fontSize: 15,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        Text(
+                                          articles?.description ?? '',
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                        Row(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Text(
+                                                'Published At - $year-$month-$day'),
+                                            IconButton(
+                                                onPressed: () {
+                                                  SharePlus.instance.share(
+                                                    ShareParams(
+                                                      uri: Uri.parse(
+                                                        articles?.url ?? '',
+                                                      ),
+                                                    ),
+                                                  );
+                                                },
+                                                icon: Icon(Icons.share))
+                                          ],
                                         ),
                                       ],
                                     ),
-                                    Text(
-                                      newsModel.description ?? '',
-                                      maxLines: 2,
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                    Row(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      children: [
-                                        Text('Published At - '),
-                                        Text('$year-$month-$day'),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              )
-                            ],
-                          ),
+                                  )
+                                ],
+                              ),
+                            )
+                          ],
                         ),
                       ],
                     ),

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-Widget priceIndicator(num value) {
+Widget priceIndicator(num? value) {
   return (value ?? 0) > 0
       ? Icon(
           Icons.arrow_drop_up,
@@ -12,6 +12,6 @@ Widget priceIndicator(num value) {
         );
 }
 
-MaterialColor indicatorColor(num value) {
+MaterialColor indicatorColor(num? value) {
   return (value ?? 0) > 0 ? Colors.green : Colors.red;
 }

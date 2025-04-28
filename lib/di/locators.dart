@@ -11,5 +11,8 @@ Future<void> setupLocators() async {
   getIt.registerSingleton<SharedPreferences>(preferences);
   Dio dio = Dio(BaseOptions(baseUrl: UrlConst.baseUrl));
   dio.interceptors.add(PrettyDioLogger());
-  getIt.registerSingleton<Dio>(dio);
+  getIt.registerSingleton<Dio>(dio,instanceName: 'price');
+  Dio dioNews=Dio(BaseOptions(baseUrl: UrlConst.newsUrl));
+  dioNews.interceptors.add(PrettyDioLogger());
+  getIt.registerSingleton<Dio>(dioNews,instanceName: 'news');
 }

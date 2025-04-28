@@ -1,5 +1,43 @@
 class NewsModel {
   NewsModel({
+      this.status, 
+      this.totalResults, 
+      this.articles,});
+
+  NewsModel.fromJson(dynamic json) {
+    status = json['status'];
+    totalResults = json['totalResults'];
+    if (json['articles'] != null) {
+      articles = [];
+      json['articles'].forEach((v) {
+        articles?.add(Articles.fromJson(v));
+      });
+    }
+  }
+  String? status;
+  num? totalResults;
+  List<Articles>? articles;
+NewsModel copyWith({  String? status,
+  num? totalResults,
+  List<Articles>? articles,
+}) => NewsModel(  status: status ?? this.status,
+  totalResults: totalResults ?? this.totalResults,
+  articles: articles ?? this.articles,
+);
+  Map<String, dynamic> toJson() {
+    final map = <String, dynamic>{};
+    map['status'] = status;
+    map['totalResults'] = totalResults;
+    if (articles != null) {
+      map['articles'] = articles?.map((v) => v.toJson()).toList();
+    }
+    return map;
+  }
+
+}
+
+class Articles {
+  Articles({
       this.source, 
       this.author, 
       this.title, 
@@ -9,7 +47,7 @@ class NewsModel {
       this.publishedAt, 
       this.content,});
 
-  NewsModel.fromJson(dynamic json) {
+  Articles.fromJson(dynamic json) {
     source = json['source'] != null ? Source.fromJson(json['source']) : null;
     author = json['author'];
     title = json['title'];
@@ -27,7 +65,7 @@ class NewsModel {
   String? urlToImage;
   String? publishedAt;
   String? content;
-NewsModel copyWith({  Source? source,
+Articles copyWith({  Source? source,
   String? author,
   String? title,
   String? description,
@@ -35,7 +73,7 @@ NewsModel copyWith({  Source? source,
   String? urlToImage,
   String? publishedAt,
   String? content,
-}) => NewsModel(  source: source ?? this.source,
+}) => Articles(  source: source ?? this.source,
   author: author ?? this.author,
   title: title ?? this.title,
   description: description ?? this.description,

@@ -6,7 +6,7 @@ import 'package:riverpod_app/static/url_const.dart';
 import 'package:riverpod_app/static/utils.dart';
 
 class PriceApiServices {
-  final Dio _dio = GetIt.instance.get<Dio>();
+  final Dio _dio = GetIt.instance.get(instanceName: 'price');
   Future<List<PriceModel>> getPriceList(
       {String currency = 'usd', required int page, String? order}) async {
     Map<String, String>? orderMap = order == null ? null : {'order': order};
