@@ -12,6 +12,11 @@ class UrlConst {
     return "?q=cryptocurrency&page=${page.toString()}&pageSize=20&apiKey=ddebe25ee080469d865b4ada1944ff92";
   }
 
+  static String getWssMessage(String symbol) {
+    return '{"type": "subscribe", "product_ids": ["$symbol-USD"], "channels": ["ticker"]}';
+  }
+
+  static const detailUrl = "wss://ws-feed.exchange.coinbase.com";
   static const favoriteUrl =
       "markets?vs_currency=usd&ids=bitcoin,ethereum&price_change_percentage=1h,24h,7d";
 

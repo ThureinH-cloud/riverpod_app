@@ -8,7 +8,7 @@ typedef NewsStateProvider
 
 class NewsListStateNotifier extends Notifier<NewsListStateModel> {
   final NewsApiServices _newsApiServices = NewsApiServices();
-  int _page = 1;
+  int _page = 0;
 
   @override
   NewsListStateModel build() {

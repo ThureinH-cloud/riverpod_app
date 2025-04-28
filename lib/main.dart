@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_app/di/locators.dart';
 import 'package:riverpod_app/static/go_routes.dart';
-import 'package:riverpod_app/static/my_preferences_storage.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await MyPreferencesStorage.initStorage();
+  await setupLocators();
   runApp(
     ProviderScope(
       child: MyApp(),

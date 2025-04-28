@@ -1,15 +1,12 @@
 import 'package:dio/dio.dart';
-import 'package:pretty_dio_logger/pretty_dio_logger.dart';
+import 'package:get_it/get_it.dart';
 import 'package:riverpod_app/data/dto/favorite_dto.dart';
 import 'package:riverpod_app/data/models/price_model.dart';
 import 'package:riverpod_app/static/url_const.dart';
 import 'package:riverpod_app/static/utils.dart';
 
 class PriceApiServices {
-  final Dio _dio = Dio(BaseOptions(baseUrl: UrlConst.baseUrl))
-    ..interceptors.add(
-      PrettyDioLogger(),
-    );
+  final Dio _dio = GetIt.instance.get<Dio>();
   Future<List<PriceModel>> getPriceList(
       {String currency = 'usd', required int page, String? order}) async {
     Map<String, String>? orderMap = order == null ? null : {'order': order};
