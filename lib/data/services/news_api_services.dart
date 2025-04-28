@@ -8,9 +8,9 @@ class NewsApiServices {
     ..interceptors.add(
       PrettyDioLogger(),
     );
-  Future<List<NewsModel>> getNews({int page = 1}) async {
+  Future<List<NewsModel>> getNews({int? page}) async {
     final response = await _dio.get(UrlConst.queryString,
-        queryParameters: {"page": page, "pageSize": 20});
+        queryParameters: {"page": page ?? 1, "pageSize": 20});
     if (response.statusCode == 200) {
       final List<dynamic> data = response.data['articles'];
       return data.map((e) => NewsModel.fromJson(e)).toList();

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:riverpod_app/data/dto/favorite_dto.dart';
 
 import '../static/url_const.dart';
 import '../widgets/iframe_viewer/iframe_viewer_mobile.dart';
@@ -32,28 +31,10 @@ class _PriceDetailsPageState extends ConsumerState<PriceDetailsPage> {
         centerTitle: false,
         title: Text(widget.name),
         actions: [
-          (!FavoriteDto.getFavList().contains(widget.name))
-              ? IconButton(
-                  onPressed: () async {
-                    Set<String> list = FavoriteDto.getFavList().toSet();
-                    list.add(widget.name);
-
-                    FavoriteDto.setFavoriteList(list.toList());
-                    setState(() {});
-                    print(FavoriteDto.getFavList());
-                  },
-                  icon: Icon(
-                    Icons.favorite_outline,
-                  ),
-                )
-              : IconButton(
-                  onPressed: () {
-                    Set<String> list = FavoriteDto.getFavList().toSet();
-                    list.remove(widget.name);
-                    FavoriteDto.setFavoriteList(list.toList());
-                    setState(() {});
-                  },
-                  icon: Icon(Icons.favorite))
+          IconButton(
+            onPressed: () {},
+            icon: Icon(Icons.star_outline),
+          ),
         ],
       ),
       body: SingleChildScrollView(

@@ -18,12 +18,6 @@ class AppBrowserPage extends StatelessWidget {
           onPageStarted: (String url) {},
           onPageFinished: (String url) {},
           onWebResourceError: (WebResourceError error) {},
-          onNavigationRequest: (NavigationRequest request) {
-            if (request.url.startsWith('XXXXXXXXXXXXXXXXXXXXXXXX')) {
-              return NavigationDecision.prevent;
-            }
-            return NavigationDecision.navigate;
-          },
         ),
       )
       ..loadRequest(Uri.parse(url));

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:riverpod_app/pages/home_page.dart';
 import 'package:riverpod_app/pages/price_details_page.dart';
 
 import '../pages/favorite_page.dart';
-import '../pages/home_page.dart';
 import '../pages/news_page.dart';
 import '../pages/price_list_page.dart';
 import '../pages/settings_page.dart';
@@ -18,21 +18,48 @@ const mainRoutes = [
 final GoRouter routers = GoRouter(
   initialLocation: '/',
   routes: [
-    GoRoute(
-      path: '/',
-      builder: (context, state) => HomePage(child: PriceListPage()),
-    ),
-    GoRoute(
-      path: '/favorites',
-      builder: (context, state) => HomePage(child: FavoritePage()),
-    ),
-    GoRoute(
-      path: '/news',
-      builder: (context, state) => HomePage(child: NewsPage()),
-    ),
-    GoRoute(
-      path: '/settings',
-      builder: (context, state) => HomePage(child: SettingsPage()),
+    StatefulShellRoute.indexedStack(
+      builder: (context, state, navigationShell) {
+        return HomePage(shell: navigationShell);
+      },
+      branches: [
+        StatefulShellBranch(
+          routes: [
+            GoRoute(
+              name: 'list',
+              path: '/',
+              builder: (context, state) => PriceListPage(),
+            ),
+          ],
+        ),
+        StatefulShellBranch(
+          routes: [
+            GoRoute(
+              name: 'favorites',
+              path: '/favorites',
+              builder: (context, state) => FavoritePage(),
+            ),
+          ],
+        ),
+        StatefulShellBranch(
+          routes: [
+            GoRoute(
+              name: 'news',
+              path: '/news',
+              builder: (context, state) => NewsPage(),
+            ),
+          ],
+        ),
+        StatefulShellBranch(
+          routes: [
+            GoRoute(
+              name: 'settings',
+              path: '/settings',
+              builder: (context, state) => SettingsPage(),
+            ),
+          ],
+        ),
+      ],
     ),
     GoRoute(
         name: 'detail',

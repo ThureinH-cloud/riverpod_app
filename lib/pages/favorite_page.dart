@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:riverpod_app/static/my_preferences_storage.dart';
 
 import '../data/models/price_model.dart';
 import '../notifiers/price_list/price_list_state_model.dart';
@@ -26,7 +25,6 @@ class _FavoritePageState extends ConsumerState<FavoritePage> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    MyPreferencesStorage.getPreferences();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(priceListProvider.notifier).getFavoriteList();
     });
