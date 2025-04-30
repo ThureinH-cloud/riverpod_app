@@ -22,12 +22,14 @@ class PriceDetailStateNotifier
       _detailWssService.disconnect();
     });
 
-    return PriceDetailStateModel(isFavorite: false);
+    return PriceDetailStateModel();
   }
 
   void getUpdatedPrice(String symbol, String name) {
     _detailWssService.sendMessage(UrlConst.getWssMessage(symbol));
     Stream<DetailsModel>? detailStream = _detailWssService.getUpdatedPrice();
+    bool isFav = _sharedPreUtils.isFavorite(name);
+    state = state.copyWith(isFavorite: isFav);
     detailStream?.listen(
       (price) {
         state = state.copyWith(
@@ -44,19 +46,13 @@ class PriceDetailStateNotifier
 
   void addFavorite(String name) {
     _sharedPreUtils.saveFavorite(name.toLowerCase());
-    state = state.copyWith(isFavorite: true);
+    bool isFav = _sharedPreUtils.isFavorite(name);
+    state = state.copyWith(isFavorite: isFav);
   }
 
   void removeFavorite(String name) {
     _sharedPreUtils.removeFavorite(name.toLowerCase());
-    state = state.copyWith(isFavorite: false);
-  }
-
-  bool getFavoriteState(String name) {
-    print("Call State");
-    List<String> favorites = _sharedPreUtils.getFavorite();
-    bool isFavorite = favorites.contains(name.toLowerCase());
-    state = state.copyWith(isFavorite: isFavorite);
-    return isFavorite;
+    bool isFav = _sharedPreUtils.isFavorite(name);
+    state = state.copyWith(isFavorite: isFav);
   }
 }

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:riverpod_app/data/models/price_model.dart';
-import 'package:riverpod_app/notifiers/price_list/price_list_state_model.dart';
+import 'package:get_it/get_it.dart';
 import 'package:riverpod_app/notifiers/price_list/price_list_state_notifier.dart';
 
 import '../widgets/price_list_widget.dart';
@@ -23,17 +22,12 @@ class _PriceListPageState extends ConsumerState<PriceListPage> {
     });
   }
 
-  final priceListProvider = PriceListStateProvider(
-    () {
-      return PriceListStateNotifier();
-    },
-  );
+  final PriceListStateProvider priceListProvider =
+      GetIt.I.get<PriceListStateProvider>();
   @override
   Widget build(BuildContext context) {
-    PriceListStateModel stateModel = ref.watch(priceListProvider);
-    List<PriceModel> priceList = stateModel.priceList;
     TextTheme textTheme = TextTheme.of(context);
     return PriceListWidget(
-        stateModel: stateModel, priceList: priceList, textTheme: textTheme);
+        isFav: false, stateProvider: priceListProvider, textTheme: textTheme);
   }
 }

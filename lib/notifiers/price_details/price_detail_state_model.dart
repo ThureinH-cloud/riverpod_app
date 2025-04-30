@@ -3,13 +3,13 @@ class PriceDetailStateModel {
   num? bidPrice;
   num? sellPrice;
   DateTime? time;
-  bool? isFavorite;
+  bool isFavorite;
   PriceDetailStateModel(
       {this.currentPrice,
       this.bidPrice,
       this.sellPrice,
       this.time,
-      this.isFavorite});
+      this.isFavorite = false});
   PriceDetailStateModel copyWith(
       {num? currentPrice,
       num? bidPrice,

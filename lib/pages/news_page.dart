@@ -72,11 +72,13 @@ class _NewsPageState extends ConsumerState<NewsPage> {
                   child: Card(
                     clipBehavior: Clip.antiAliasWithSaveLayer,
                     child: Column(
+                      spacing: 12,
                       children: [
                         Row(
                           children: [
                             Expanded(
                               child: Column(
+                                spacing: 12,
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
@@ -149,6 +151,7 @@ class _NewsPageState extends ConsumerState<NewsPage> {
                                           articles?.description ?? '',
                                           overflow: TextOverflow.ellipsis,
                                         ),
+                                        Divider(),
                                         Row(
                                           crossAxisAlignment:
                                               CrossAxisAlignment.center,
@@ -156,7 +159,7 @@ class _NewsPageState extends ConsumerState<NewsPage> {
                                               MainAxisAlignment.spaceBetween,
                                           children: [
                                             Text(
-                                                'Published At - $year-$month-$day'),
+                                                'Published At - $year/$month/$day ${parsed.hour}:${parsed.minute}'),
                                             IconButton(
                                                 onPressed: () {
                                                   SharePlus.instance.share(

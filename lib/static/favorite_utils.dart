@@ -11,6 +11,11 @@ class SharedPreUtils {
         .setStringList(_favKey, [...existingCodes, code.toLowerCase()]);
   }
 
+  bool isFavorite(String code) {
+    List<String> existingCodes = getFavorite();
+    return existingCodes.contains(code.toLowerCase());
+  }
+
   void removeFavorite(String code) {
     List<String> existingCodes = getFavorite();
     existingCodes.remove(code.toLowerCase());

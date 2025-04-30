@@ -1,15 +1,37 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
+import 'package:riverpod_app/notifiers/price_details/price_detail_state_notifier.dart';
+import 'package:riverpod_app/notifiers/price_list/price_list_state_notifier.dart';
 
-class HomePage extends StatefulWidget {
+class HomePage extends ConsumerStatefulWidget {
   const HomePage({super.key, required this.shell});
   final StatefulNavigationShell shell;
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  ConsumerState<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends ConsumerState<HomePage> {
+  final priceListProvider = PriceListStateProvider(
+    () => PriceListStateNotifier(),
+  );
+  final priceDetailProvider = PriceDetailProvider(
+    () => PriceDetailStateNotifier(),
+  );
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    if (!GetIt.I.isRegistered<PriceListStateProvider>()) {
+      GetIt.I.registerSingleton<PriceListStateProvider>(priceListProvider);
+    }
+    if (!GetIt.I.isRegistered<PriceDetailProvider>()) {
+      GetIt.I.registerSingleton<PriceDetailProvider>(priceDetailProvider);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     // final currentPath = GoRouter.of(context).state.uri.path;

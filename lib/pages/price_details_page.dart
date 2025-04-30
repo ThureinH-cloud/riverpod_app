@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get_it/get_it.dart';
 import 'package:riverpod_app/notifiers/price_details/price_detail_state_model.dart';
 import 'package:riverpod_app/notifiers/price_details/price_detail_state_notifier.dart';
+import 'package:riverpod_app/notifiers/price_list/price_list_state_notifier.dart';
 
 import '../static/favorite_utils.dart';
 import '../static/url_const.dart';
@@ -18,11 +19,9 @@ class PriceDetailsPage extends ConsumerStatefulWidget {
 }
 
 class _PriceDetailsPageState extends ConsumerState<PriceDetailsPage> {
-  PriceDetailProvider priceDetailProvider = PriceDetailProvider(
-    () {
-      return PriceDetailStateNotifier();
-    },
-  );
+  PriceDetailProvider priceDetailProvider = GetIt.I.get<PriceDetailProvider>();
+  PriceListStateProvider priceListStateProvider =
+      GetIt.I.get<PriceListStateProvider>();
   @override
   void initState() {
     // TODO: implement initState
@@ -31,7 +30,6 @@ class _PriceDetailsPageState extends ConsumerState<PriceDetailsPage> {
       ref
           .read(priceDetailProvider.notifier)
           .getUpdatedPrice(widget.symbol.toUpperCase(), widget.name);
-      ref.read(priceDetailProvider.notifier).getFavoriteState(widget.name);
     });
   }
 
@@ -51,8 +49,8 @@ class _PriceDetailsPageState extends ConsumerState<PriceDetailsPage> {
         actions: [
           Consumer(
             builder: (context, ref, child) {
-              bool favorite =
-                  ref.watch(priceDetailProvider).isFavorite ?? false;
+              bool favorite = ref.watch(priceDetailProvider).isFavorite;
+
               return IconButton(
                 onPressed: () {
                   if (favorite) {
@@ -64,7 +62,7 @@ class _PriceDetailsPageState extends ConsumerState<PriceDetailsPage> {
                         .read(priceDetailProvider.notifier)
                         .addFavorite(widget.name);
                   }
-                  {}
+                  ref.read(priceListStateProvider.notifier).getFavoriteList();
                 },
                 icon: favorite ? Icon(Icons.star) : Icon(Icons.star_outline),
               );
@@ -117,5 +115,11 @@ class _PriceDetailsPageState extends ConsumerState<PriceDetailsPage> {
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
   }
 }

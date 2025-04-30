@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get_it/get_it.dart';
 import 'package:riverpod_app/notifiers/app_state/app_state_notifier.dart';
+import 'package:riverpod_app/notifiers/price_list/price_list_state_notifier.dart';
 import 'package:riverpod_app/static/favorite_utils.dart';
 
 class SettingsPage extends ConsumerStatefulWidget {
@@ -16,11 +17,16 @@ class SettingsPage extends ConsumerStatefulWidget {
 class _SettingsPageState extends ConsumerState<SettingsPage> {
   final AppStateProvider _appStateProvider = GetIt.I.get<AppStateProvider>();
   final SharedPreUtils _preUtils = GetIt.I.get<SharedPreUtils>();
+  final PriceListStateProvider _listStateProvider =
+      GetIt.I.get<PriceListStateProvider>();
   @override
   Widget build(BuildContext context) {
     bool mode = ref.watch(_appStateProvider).isDark;
-    return SafeArea(
-      child: Column(
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Settings"),
+      ),
+      body: Column(
         children: [
           Card(
             child: SwitchListTile.adaptive(
@@ -66,6 +72,9 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                               ),
                               onPressed: () {
                                 _preUtils.clearFavorite();
+                                ref
+                                    .read(_listStateProvider.notifier)
+                                    .getFavoriteList();
                                 Navigator.pop(context);
                               },
                               child: Text("Remove"),
