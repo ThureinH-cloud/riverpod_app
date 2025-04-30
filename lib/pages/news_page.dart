@@ -13,6 +13,12 @@ class NewsPage extends ConsumerStatefulWidget {
   ConsumerState<NewsPage> createState() => _NewsPageState();
 }
 
+final newsListProvider = NewsStateProvider(
+  () {
+    return NewsListStateNotifier();
+  },
+);
+
 class _NewsPageState extends ConsumerState<NewsPage> {
   @override
   void initState() {
@@ -23,11 +29,6 @@ class _NewsPageState extends ConsumerState<NewsPage> {
     });
   }
 
-  final newsListProvider = NewsStateProvider(
-    () {
-      return NewsListStateNotifier();
-    },
-  );
   @override
   Widget build(BuildContext context) {
     NewsListStateModel newsListStateModel = ref.watch(newsListProvider);
