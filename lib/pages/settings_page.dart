@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get_it/get_it.dart';
 import 'package:riverpod_app/notifiers/app_state/app_state_notifier.dart';
+import 'package:riverpod_app/static/favorite_utils.dart';
 
 class SettingsPage extends ConsumerStatefulWidget {
   const SettingsPage({super.key});
@@ -14,6 +15,7 @@ class SettingsPage extends ConsumerStatefulWidget {
 
 class _SettingsPageState extends ConsumerState<SettingsPage> {
   final AppStateProvider _appStateProvider = GetIt.I.get<AppStateProvider>();
+  final SharedPreUtils _preUtils = GetIt.I.get<SharedPreUtils>();
   @override
   Widget build(BuildContext context) {
     bool mode = ref.watch(_appStateProvider).isDark;
@@ -63,6 +65,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                                     WidgetStatePropertyAll(Colors.red),
                               ),
                               onPressed: () {
+                                _preUtils.clearFavorite();
                                 Navigator.pop(context);
                               },
                               child: Text("Remove"),

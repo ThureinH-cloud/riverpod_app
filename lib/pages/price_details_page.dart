@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:get_it/get_it.dart';
 import 'package:riverpod_app/notifiers/price_details/price_detail_state_model.dart';
 import 'package:riverpod_app/notifiers/price_details/price_detail_state_notifier.dart';
 
+import '../static/favorite_utils.dart';
 import '../static/url_const.dart';
 import '../widgets/iframe_viewer/iframe_viewer_mobile.dart';
 
@@ -29,6 +31,7 @@ class _PriceDetailsPageState extends ConsumerState<PriceDetailsPage> {
       ref
           .read(priceDetailProvider.notifier)
           .getUpdatedPrice(widget.symbol.toUpperCase(), widget.name);
+      ref.read(priceDetailProvider.notifier).getFavoriteState(widget.name);
     });
   }
 
@@ -37,15 +40,35 @@ class _PriceDetailsPageState extends ConsumerState<PriceDetailsPage> {
     double height = MediaQuery.of(context).size.height;
     String chartUrl =
         '${UrlConst.chartUrl}${widget.symbol.toUpperCase()}USD${UrlConst.chartQuery}';
-    print(widget.symbol);
+
+    SharedPreUtils sharedPreUtils = GetIt.I.get<SharedPreUtils>();
+    print(sharedPreUtils.getFavorite());
+    //sharedPreUtils.clearFavorite();
     return Scaffold(
       appBar: AppBar(
         centerTitle: false,
         title: Text(widget.name),
         actions: [
-          IconButton(
-            onPressed: () {},
-            icon: Icon(Icons.star_outline),
+          Consumer(
+            builder: (context, ref, child) {
+              bool favorite =
+                  ref.watch(priceDetailProvider).isFavorite ?? false;
+              return IconButton(
+                onPressed: () {
+                  if (favorite) {
+                    ref
+                        .read(priceDetailProvider.notifier)
+                        .removeFavorite(widget.name);
+                  } else {
+                    ref
+                        .read(priceDetailProvider.notifier)
+                        .addFavorite(widget.name);
+                  }
+                  {}
+                },
+                icon: favorite ? Icon(Icons.star) : Icon(Icons.star_outline),
+              );
+            },
           ),
         ],
       ),

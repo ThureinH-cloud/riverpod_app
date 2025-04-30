@@ -62,7 +62,7 @@ class _NewsPageState extends ConsumerState<NewsPage> {
                 String day = parsed.day.toString().padLeft(2, '0');
                 return InkWell(
                   onTap: () {
-                    Navigator.of(context).push(
+                    Navigator.of(context, rootNavigator: true).push(
                       MaterialPageRoute(
                         builder: (_) =>
                             AppBrowserPage(url: articles?.url ?? ''),

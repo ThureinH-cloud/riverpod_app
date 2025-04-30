@@ -8,12 +8,12 @@ class SharedPreUtils {
   void saveFavorite(String code) {
     List<String> existingCodes = getFavorite();
     _sharedPreferences
-        .setStringList(_favKey, [...existingCodes, code.toUpperCase()]);
+        .setStringList(_favKey, [...existingCodes, code.toLowerCase()]);
   }
 
   void removeFavorite(String code) {
     List<String> existingCodes = getFavorite();
-    existingCodes.remove(code.toUpperCase());
+    existingCodes.remove(code.toLowerCase());
     _sharedPreferences.setStringList(_favKey, existingCodes);
   }
 

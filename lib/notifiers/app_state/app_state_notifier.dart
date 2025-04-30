@@ -10,7 +10,8 @@ class AppStateNotifier extends Notifier<AppStateModel> {
   @override
   AppStateModel build() {
     // TODO: implement build
-    return AppStateModel(isDark: false);
+    final bool isDark = _preUtils.getTheme();
+    return AppStateModel(isDark: isDark);
   }
 
   void toggleDarkMode(bool mode) {
