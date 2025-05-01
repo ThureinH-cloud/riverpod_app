@@ -43,149 +43,155 @@ class _NewsPageState extends ConsumerState<NewsPage> {
           ),
         if (newsListStateModel.loading == false)
           Expanded(
-            child: ListView.builder(
-              itemCount: (count + 1),
-              itemBuilder: (context, index) {
-                print('$index -- $count');
-                if (index == count) {
-                  ref.read(newsListProvider.notifier).loadMore();
-                  return Center(
-                    child: CircularProgressIndicator(),
-                  );
-                }
-                Articles? articles = news?.articles?[index];
-
-                DateTime parsed =
-                    DateTime.parse(articles?.publishedAt ?? '').toLocal();
-                String year = parsed.year.toString();
-                String month = parsed.month.toString().padLeft(2, '0');
-                String day = parsed.day.toString().padLeft(2, '0');
-                return InkWell(
-                  onTap: () {
-                    Navigator.of(context, rootNavigator: true).push(
-                      MaterialPageRoute(
-                        builder: (_) =>
-                            AppBrowserPage(url: articles?.url ?? ''),
-                      ),
+            child: RefreshIndicator.adaptive(
+              onRefresh: () async {
+                await ref.read(newsListProvider.notifier).fetchNewsfromApi();
+              },
+              child: ListView.builder(
+                itemCount: (count + 1),
+                itemBuilder: (context, index) {
+                  print('$index -- $count');
+                  if (index == count) {
+                    ref.read(newsListProvider.notifier).loadMore();
+                    return Center(
+                      child: CircularProgressIndicator(),
                     );
-                  },
-                  child: Card(
-                    clipBehavior: Clip.antiAliasWithSaveLayer,
-                    child: Column(
-                      spacing: 12,
-                      children: [
-                        Row(
-                          children: [
-                            Expanded(
-                              child: Column(
-                                spacing: 12,
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  if (articles?.urlToImage != null)
-                                    Stack(
-                                      children: [
-                                        Image.network(
-                                          articles?.urlToImage ?? '',
-                                          width: double.infinity,
-                                          height: 180,
-                                          fit: BoxFit.cover,
-                                          errorBuilder:
-                                              (context, error, stackTrace) {
-                                            return SizedBox.shrink();
-                                          },
-                                        ),
-                                        Container(
-                                          padding: EdgeInsets.all(12),
-                                          color: Colors.black.withAlpha(80),
-                                          margin: EdgeInsets.all(8),
-                                          child: Text(
-                                            articles?.source?.name ?? '',
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                            ),
+                  }
+                  Articles? articles = news?.articles?[index];
+
+                  DateTime parsed =
+                      DateTime.parse(articles?.publishedAt ?? '').toLocal();
+                  String year = parsed.year.toString();
+                  String month = parsed.month.toString().padLeft(2, '0');
+                  String day = parsed.day.toString().padLeft(2, '0');
+                  return InkWell(
+                    onTap: () {
+                      Navigator.of(context, rootNavigator: true).push(
+                        MaterialPageRoute(
+                          builder: (_) =>
+                              AppBrowserPage(url: articles?.url ?? ''),
+                        ),
+                      );
+                    },
+                    child: Card(
+                      clipBehavior: Clip.antiAliasWithSaveLayer,
+                      child: Column(
+                        spacing: 12,
+                        children: [
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Column(
+                                  spacing: 12,
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    if (articles?.urlToImage != null)
+                                      Stack(
+                                        children: [
+                                          Image.network(
+                                            articles?.urlToImage ?? '',
+                                            width: double.infinity,
+                                            height: 180,
+                                            fit: BoxFit.cover,
+                                            errorBuilder:
+                                                (context, error, stackTrace) {
+                                              return SizedBox.shrink();
+                                            },
                                           ),
-                                        )
-                                      ],
-                                    ),
-                                  Padding(
-                                    padding: const EdgeInsets.all(12.0),
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          articles?.title ?? '',
-                                          maxLines: 4,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 17,
-                                          ),
-                                        ),
-                                        Row(
-                                          children: [
-                                            Text(
-                                              'Author - ',
+                                          Container(
+                                            padding: EdgeInsets.all(12),
+                                            color: Colors.black.withAlpha(80),
+                                            margin: EdgeInsets.all(8),
+                                            child: Text(
+                                              articles?.source?.name ?? '',
                                               style: TextStyle(
-                                                fontWeight: FontWeight.w500,
-                                                fontSize: 15,
+                                                color: Colors.white,
                                               ),
                                             ),
-                                            Expanded(
-                                              child: Text(
-                                                articles?.author ?? '',
-                                                overflow: TextOverflow.ellipsis,
-                                                maxLines: 1,
+                                          )
+                                        ],
+                                      ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(12.0),
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            articles?.title ?? '',
+                                            maxLines: 4,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 17,
+                                            ),
+                                          ),
+                                          Row(
+                                            children: [
+                                              Text(
+                                                'Author - ',
                                                 style: TextStyle(
                                                   fontWeight: FontWeight.w500,
                                                   fontSize: 15,
                                                 ),
                                               ),
-                                            ),
-                                          ],
-                                        ),
-                                        Text(
-                                          articles?.description ?? '',
-                                          overflow: TextOverflow.ellipsis,
-                                        ),
-                                        Divider(),
-                                        Row(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Text(
-                                                'Published At - $year/$month/$day ${parsed.hour}:${parsed.minute}'),
-                                            IconButton(
-                                                onPressed: () {
-                                                  SharePlus.instance.share(
-                                                    ShareParams(
-                                                      uri: Uri.parse(
-                                                        articles?.url ?? '',
+                                              Expanded(
+                                                child: Text(
+                                                  articles?.author ?? '',
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                  maxLines: 1,
+                                                  style: TextStyle(
+                                                    fontWeight: FontWeight.w500,
+                                                    fontSize: 15,
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          Text(
+                                            articles?.description ?? '',
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                          Divider(),
+                                          Row(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Text(
+                                                  'Published At - $year/$month/$day ${parsed.hour}:${parsed.minute}'),
+                                              IconButton(
+                                                  onPressed: () {
+                                                    SharePlus.instance.share(
+                                                      ShareParams(
+                                                        uri: Uri.parse(
+                                                          articles?.url ?? '',
+                                                        ),
                                                       ),
-                                                    ),
-                                                  );
-                                                },
-                                                icon: Icon(Icons.share))
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                  )
-                                ],
-                              ),
-                            )
-                          ],
-                        ),
-                      ],
+                                                    );
+                                                  },
+                                                  icon: Icon(Icons.share))
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              )
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                );
-              },
+                  );
+                },
+              ),
             ),
           )
       ],

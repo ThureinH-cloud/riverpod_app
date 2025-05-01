@@ -34,7 +34,7 @@ class NewsListStateNotifier extends Notifier<NewsListStateModel> {
     }
   }
 
-  void fetchNewsfromApi() async {
+  Future<void> fetchNewsfromApi() async {
     try {
       state = state.copyWith(loading: true, errorMessage: '');
       NewsModel news = await _newsApiServices.getNews();
